@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: docling-api
+    env: docker
+    image: quay.io/docling-project/docling-serve:latest
+    envVars:
+      - key: DOCLING_SERVE_ENABLE_UI
+        value: "true"  # Enables web UI at /ui
+      - key: PORT
+        fromDatabase:
+          name: docling-db  # Optional: Add if using persistent storage
+          property: connectionString
+    dockerCommand: |
+      docling-serve run --enable-ui --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health  # Adjust if Docling exposes this; fallback to /docs
+    autoDeploy: true
+    pullRequestPreviewsEnabled: true  # For testing branches
+
